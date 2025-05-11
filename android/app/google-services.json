@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "869630533762",
+    "project_id": "devmob-echange",
+    "storage_bucket": "devmob-echange.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869630533762:android:f5d4162c7f7d8c9753d49b",
+        "android_client_info": {
+          "package_name": "com.example.dev_mob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869630533762-jfk3k14cqbjbq04bujbjkc0orq8cmh3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOhMphUiMhzLisBIWJmrNLXMfzB3TwEZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869630533762-jfk3k14cqbjbq04bujbjkc0orq8cmh3s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "869630533762-pv6alo1e0445tk5i869qjm04v8iimhcs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.devMob"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869630533762:android:31eae46305bf172153d49b",
+        "android_client_info": {
+          "package_name": "com.example.devmob_echange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869630533762-jfk3k14cqbjbq04bujbjkc0orq8cmh3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOhMphUiMhzLisBIWJmrNLXMfzB3TwEZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869630533762-jfk3k14cqbjbq04bujbjkc0orq8cmh3s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "869630533762-pv6alo1e0445tk5i869qjm04v8iimhcs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.devMob"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
