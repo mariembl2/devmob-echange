@@ -1,46 +1,63 @@
+// models/reservation.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Reservation {
-  final String id; // ID unique de la réservation
-  final String itemId; // ID de l'objet réservé
-  final String userId; // ID de l'utilisateur qui a fait la réservation
-  final DateTime startDate; // Date de début de la réservation
-  final DateTime endDate; // Date de fin de la réservation
-  final String status; // Statut de la réservation (ex: "pending", "approved", "rejected")
-  final String? message; // Message optionnel de l'utilisateur
+  final String id;
+  final String userId;
+  final String itemId;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String status;
+  final String? itemTitle; // <-- Champ optionnel
 
   Reservation({
     required this.id,
-    required this.itemId,
     required this.userId,
+    required this.itemId,
     required this.startDate,
     required this.endDate,
     required this.status,
-    this.message,
+    this.itemTitle,
   });
 
-  // Convertir un document Firestore en objet Reservation
   factory Reservation.fromMap(Map<String, dynamic> data, String documentId) {
     return Reservation(
       id: documentId,
-      itemId: data['itemId'] ?? '',
-      userId: data['userId'] ?? '',
+      userId: data['userId'],
+      itemId: data['itemId'],
       startDate: (data['startDate'] as Timestamp).toDate(),
       endDate: (data['endDate'] as Timestamp).toDate(),
-      status: data['status'] ?? 'pending',
-      message: data['message'],
+      status: data['status'] ?? 'en attente',
     );
   }
 
-  // Convertir un objet Reservation en Map pour Firestore
   Map<String, dynamic> toMap() {
     return {
-      'itemId': itemId,
       'userId': userId,
-      'startDate': Timestamp.fromDate(startDate),
-      'endDate': Timestamp.fromDate(endDate),
+      'itemId': itemId,
+      'startDate': startDate,
+      'endDate': endDate,
       'status': status,
-      'message': message,
     };
+  }
+
+  Reservation copyWith({
+    String? id,
+    String? userId,
+    String? itemId,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? status,
+    String? itemTitle,
+  }) {
+    return Reservation(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      itemId: itemId ?? this.itemId,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      status: status ?? this.status,
+      itemTitle: itemTitle ?? this.itemTitle,
+    );
   }
 }

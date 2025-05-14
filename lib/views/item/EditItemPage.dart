@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dev_mob/models/item.dart';
+import 'package:dev_mob/models/item_model.dart';
 import 'package:dev_mob/services/ItemService.dart';
 
 class EditItemPage extends StatefulWidget {

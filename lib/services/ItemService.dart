@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dev_mob/models/item.dart';
+import 'package:dev_mob/models/item_model.dart';
 
 class ItemService {
   final CollectionReference _itemCollection =

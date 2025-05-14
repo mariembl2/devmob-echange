@@ -61,6 +61,10 @@ class ItemModel {
       'reservedDates': reservedDates.map((d) => Timestamp.fromDate(d)).toList(),
     };
   }
+    factory ItemModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return ItemModel.fromMap(data, doc.id);
+  }
 
   bool get isFree => pricePerDay == 0;
 }

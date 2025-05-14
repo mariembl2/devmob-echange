@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:dev_mob/models/item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mob/models/item_model.dart';
+import 'package:dev_mob/models/reservation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class ReservationPage extends StatefulWidget {
-  final ItemModel item;
+  final ItemModel item;  // L'objet que l'utilisateur veut réserver
 
   const ReservationPage({Key? key, required this.item}) : super(key: key);
 
@@ -12,123 +14,100 @@ class ReservationPage extends StatefulWidget {
 }
 
 class _ReservationPageState extends State<ReservationPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _messageController = TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
-  bool _isLoading = false;
+  TextEditingController _messageController = TextEditingController();
 
+  // Méthode pour soumettre la réservation
   void _submitReservation() async {
-    if (_formKey.currentState!.validate() && _startDate != null && _endDate != null) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (_startDate != null && _endDate != null && _startDate!.isBefore(_endDate!)) {
+      final reservationData = {
+        'itemId': widget.item.id,
+        'ownerId': widget.item.ownerId,
+        'startDate': Timestamp.fromDate(_startDate!),
+        'endDate': Timestamp.fromDate(_endDate!),
+        'message': _messageController.text.trim(),
+        'status': 'pending', // Statut initial de la réservation
+        'createdAt': Timestamp.now(),
+        'userId': FirebaseAuth.instance.currentUser?.uid,  // L'ID de l'utilisateur connecté
+      };
 
       try {
-        // Ajouter la réservation dans Firestore
-        final reservationData = {
-          'itemId': widget.item.id,
-          'ownerId': widget.item.ownerId,
-          'startDate': Timestamp.fromDate(_startDate!),
-          'endDate': Timestamp.fromDate(_endDate!),
-          'message': _messageController.text.trim(),
-          'status': 'pending', // Statut initial : en attente
-          'createdAt': Timestamp.now(),
-        };
-
+        // Enregistrer la réservation dans Firestore
         await FirebaseFirestore.instance.collection('reservations').add(reservationData);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Réservation envoyée avec succès !')),
-        );
-
-        Navigator.pop(context); // Retour à la page précédente
+        
+        // Afficher un message de confirmation ou rediriger vers une autre page
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Réservation effectuée !')));
+        Navigator.pop(context);  // Ferme la page de réservation après la soumission
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur : ${e.toString()}')),
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur lors de la réservation : $e')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Veuillez sélectionner une plage de dates.')),
-      );
-    }
-  }
-
-  Future<void> _selectDateRange() async {
-    final DateTimeRange? picked = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 365)),
-    );
-
-    if (picked != null) {
-      setState(() {
-        _startDate = picked.start;
-        _endDate = picked.end;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Veuillez sélectionner des dates valides.')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Réserver ${widget.item.title}'),
-      ),
-      body: SingleChildScrollView(
+      appBar: AppBar(title: Text('Réserver "${widget.item.title}"')),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Sélection de la plage de dates
-              Text(
-                'Sélectionnez une plage de dates :',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: _selectDateRange,
-                child: Text(_startDate == null || _endDate == null
-                    ? 'Choisir une plage de dates'
-                    : 'Du ${_startDate!.toLocal()} au ${_endDate!.toLocal()}'),
-              ),
-              SizedBox(height: 16),
-
-              // Champ pour le message optionnel
-              TextFormField(
-                controller: _messageController,
-                decoration: InputDecoration(
-                  labelText: 'Message (optionnel)',
-                  border: OutlineInputBorder(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Dates de réservation :', style: TextStyle(fontSize: 18)),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2022),
+                      lastDate: DateTime(2101),
+                    );
+                    if (selectedDate != null) {
+                      setState(() {
+                        _startDate = selectedDate;
+                      });
+                    }
+                  },
+                  child: Text(_startDate == null ? 'Sélectionner la date de début' : 'Début: ${_startDate!.toLocal()}'),
                 ),
-                maxLines: 3,
-              ),
-              SizedBox(height: 24),
-
-              // Bouton pour soumettre la réservation
-              _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: _submitReservation,
-                      child: Text('Envoyer la demande de réservation'),
-                    ),
-            ],
-          ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2022),
+                      lastDate: DateTime(2101),
+                    );
+                    if (selectedDate != null) {
+                      setState(() {
+                        _endDate = selectedDate;
+                      });
+                    }
+                  },
+                  child: Text(_endDate == null ? 'Sélectionner la date de fin' : 'Fin: ${_endDate!.toLocal()}'),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Text('Message (facultatif) :'),
+            TextField(
+              controller: _messageController,
+              decoration: InputDecoration(hintText: 'Ajouter un message...'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _submitReservation,
+              child: Text('Confirmer la réservation'),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
   }
 }
