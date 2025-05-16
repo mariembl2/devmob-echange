@@ -1,16 +1,35 @@
-# dev_mob
+# DEVMOB – Échange 📱🔁
 
-A new Flutter project.
+Application Flutter permettant aux utilisateurs de proposer et réserver des objets du quotidien, dans une logique de partage et de réutilisation. Ce projet a été réalisé dans le cadre du module DEVMOB.
 
-## Getting Started
+## ✨ Fonctionnalités principales
 
-This project is a starting point for a Flutter application.
+- 🔐 Authentification (connexion / inscription)
+- 🧾 Ajout, édition et suppression d'objets à louer
+- 🗂️ Dashboard personnel (objets publiés par l’utilisateur)
+- 📅 Système de réservation avec calendrier et message
+- ✅ Acceptation ou refus des réservations par le propriétaire
+- 🔍 Page d'accueil avec liste des objets disponibles
 
-A few resources to get you started if this is your first Flutter project:
+## 📷 Gestion des images
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- L'ajout d'une image d’objet est **optionnel** via un champ d’URL.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Technologies utilisées
+
+- **Flutter** (framework frontend)
+- **Firebase** (Auth, Firestore)
+- **Provider** (gestion d’état)
+- **Cloud Firestore** (base de données temps réel)
+
+## 📁 Structure du projet
+lib/
+├── main.dart
+├── models/ # Modèles de données (ItemModel, UserModel, etc.)
+├── services/ # Services Firestore (ItemService, AuthService...)
+├── providers/ # AuthProvider, ItemProvider...
+├── views/ # Écrans (Home, AddItemPage, etc.)
+│ ├── item/
+│ ├── auth/
+│ └── reservation/
+└── widgets/ # Widgets personnalisés (ItemCard)
