@@ -24,12 +24,16 @@ Application Flutter permettant aux utilisateurs de proposer et réserver des obj
 
 ## 📁 Structure du projet
 lib/
-├── main.dart
-├── models/ # Modèles de données (ItemModel, UserModel, etc.)
-├── services/ # Services Firestore (ItemService, AuthService...)
-├── providers/ # AuthProvider, ItemProvider...
-├── views/ # Écrans (Home, AddItemPage, etc.)
-│ ├── item/
-│ ├── auth/
-│ └── reservation/
-└── widgets/ # Widgets personnalisés (ItemCard)
+├── models/ # User, Item, Reservation, Review
+├── services/ # AuthService, ItemService, ReservationService,
+NotificationService
+├── providers/ # AuthProvider, ItemProvider, ReservationProvider
+├── views/
+│ ├── auth/ # LoginPage, RegisterPage
+│ ├── home/ # HomePage, ItemListView, SearchBar
+│ ├── item/ # ItemDetailPage, AddItemPage, EditItemPage
+│ ├── reservation/ # ReservationPage, ReservationForm, OwnerDashboard
+│ ├── profile/ # UserProfile, MyObjectsPage, MyReservationsPage
+│ ├── review/ # LeaveReviewPage, RatingsListPage
+├── widgets/ # ItemCard
+└── main.dart
