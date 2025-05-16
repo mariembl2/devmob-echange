@@ -1,6 +1,7 @@
 import 'package:dev_mob/services/ItemService.dart';
 import 'package:dev_mob/views/item/EditItemPage.dart';
 import 'package:dev_mob/views/item/ItemDetailPage.dart';
+import 'package:dev_mob/views/reservation/OwnerReservationRequestsPage.dart'; // ✅ Import ajouté
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dev_mob/models/item_model.dart';
@@ -27,6 +28,16 @@ class OwnerDashboard extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => Navigator.pushNamed(context, '/add-item'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.mail_outline), // ✅ Icône pour réservations
+            tooltip: 'Demandes de réservation',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const OwnerReservationRequestsPage()),
+              );
+            },
           ),
         ],
       ),

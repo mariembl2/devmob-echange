@@ -13,7 +13,6 @@ class _AddItemPageState extends State<AddItemPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-  // Contrôleurs pour les champs du formulaire
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
@@ -66,13 +65,8 @@ class _AddItemPageState extends State<AddItemPage> {
               ),
               TextFormField(
                 controller: _imageUrlController,
-                decoration: InputDecoration(labelText: 'URL de l\'image'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer une URL d\'image';
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(labelText: 'URL de l\'image (optionnelle)'),
+                // Pas de validator ici → champ optionnel
               ),
               TextFormField(
                 controller: _locationController,
@@ -120,7 +114,6 @@ class _AddItemPageState extends State<AddItemPage> {
     );
   }
 
-  // Fonction pour ajouter un item
   void _addItem() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -128,7 +121,6 @@ class _AddItemPageState extends State<AddItemPage> {
       });
 
       try {
-        // Récupérer l'utilisateur actuellement connecté via AuthProvider
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final currentUser = authProvider.user;
 
@@ -140,29 +132,28 @@ class _AddItemPageState extends State<AddItemPage> {
         }
 
         final currentUserId = currentUser.uid;
+        final imageUrlText = _imageUrlController.text.trim();
 
-        // Crée un nouvel objet avec les données du formulaire
         final newItem = ItemModel(
-          id: '', // L'ID sera généré automatiquement par Firestore
+          id: '',
           ownerId: currentUserId,
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim(),
-          imageUrls: [_imageUrlController.text.trim()],
+          imageUrls: imageUrlText.isNotEmpty ? [imageUrlText] : [],
           pricePerDay: double.tryParse(_priceController.text.trim()) ?? 0.0,
           category: _selectedCategory ?? '',
           location: _locationController.text.trim(),
           createdAt: DateTime.now(),
-          reservedDates: [], // Liste vide de dates réservées par défaut
+          reservedDates: [],
         );
 
-        // Enregistrer l'item dans Firestore via ItemService
         await ItemService().addItem(newItem);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Objet ajouté avec succès !')),
         );
 
-        Navigator.pop(context); // Retour à la page précédente après l'ajout
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erreur : ${e.toString()}')),

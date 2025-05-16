@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dev_mob/models/user.dart';
+import 'package:dev_mob/profile/EditUserProfilePage.dart';
 
 class UserProfilePage extends StatelessWidget {
-  const UserProfilePage({Key? key, String? userId}) : super(key: key);
+  const UserProfilePage({Key? key}) : super(key: key);
 
   Future<UserModel> _fetchUserProfile() async {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -68,7 +69,12 @@ class UserProfilePage extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    // Tu pourras ajouter ici un formulaire de modification si tu veux
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EditUserProfilePage(user: user),
+                      ),
+                    );
                   },
                   child: const Text('Modifier le profil'),
                 ),

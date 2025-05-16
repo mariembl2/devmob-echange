@@ -38,8 +38,18 @@ class HomePage extends StatelessWidget {
             icon: Icon(Icons.bookmark),
             onPressed: () {
               if (currentUser != null) {
-                Navigator.pushNamed(context, '/my-reservations');  // Navigation vers la page des réservations
+                Navigator.pushNamed(context, '/my-reservations');
               }
+            },
+          ),
+          // Icône pour se déconnecter
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Se déconnecter',
+            onPressed: () async {
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              await authProvider.signOut();
+              Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
             },
           ),
         ],

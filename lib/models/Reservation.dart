@@ -20,16 +20,18 @@ class Reservation {
     this.itemTitle,
   });
 
-  factory Reservation.fromMap(Map<String, dynamic> data, String documentId) {
-    return Reservation(
-      id: documentId,
-      userId: data['userId'],
-      itemId: data['itemId'],
-      startDate: (data['startDate'] as Timestamp).toDate(),
-      endDate: (data['endDate'] as Timestamp).toDate(),
-      status: data['status'] ?? 'en attente',
-    );
-  }
+factory Reservation.fromMap(Map<String, dynamic> data, String documentId) {
+  return Reservation(
+    id: documentId,
+    userId: data['userId'] ?? '',
+    itemId: data['itemId'] ?? '',
+    startDate: (data['startDate'] as Timestamp).toDate(),
+    endDate: (data['endDate'] as Timestamp).toDate(),
+    status: data['status'] ?? 'pending',
+    itemTitle: data['itemTitle'],
+  );
+}
+
 
   Map<String, dynamic> toMap() {
     return {

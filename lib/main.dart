@@ -1,20 +1,16 @@
 import 'package:dev_mob/profile/MyReservationsPage.dart';
 import 'package:dev_mob/profile/UserProfile.dart';
-
 import 'package:dev_mob/providers/AuthProvider.dart';
 import 'package:dev_mob/providers/ReservationProvider.dart';
-import 'package:dev_mob/providers/ItemProvider.dart'; // ✅ Ajout de l'import
-
+import 'package:dev_mob/providers/ItemProvider.dart';
 import 'package:dev_mob/views/reservation/OwnerDashboard.dart';
-
+import 'package:dev_mob/views/reservation/OwnerReservationRequestsPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:dev_mob/services/itemservice.dart';
 import 'package:dev_mob/models/item_model.dart';
-
 import 'package:dev_mob/views/auth/LoginPage.dart';
 import 'package:dev_mob/views/auth/RegisterPage.dart' as views;
 import 'package:dev_mob/views/home/HomePage.dart';
@@ -33,7 +29,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ReservationProvider()),
-        ChangeNotifierProvider(create: (_) => ItemProvider()), // ✅ Ajout du provider
+        ChangeNotifierProvider(create: (_) => ItemProvider()),
         StreamProvider<List<ItemModel>>.value(
           value: ItemService().getItems(),
           initialData: const [],
@@ -45,14 +41,48 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final ThemeData lightTheme = ThemeData(
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+    useMaterial3: true,
+    scaffoldBackgroundColor: const Color(0xFFF9F9F9),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.teal,
+      foregroundColor: Colors.white,
+      centerTitle: true,
+    ),
+    textTheme: const TextTheme(
+      bodyMedium: TextStyle(fontSize: 16.0),
+      titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    ),
+    cardTheme: CardTheme(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'DEVMOB - Échange',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-      ),
+      theme: lightTheme,
       initialRoute: '/',
       routes: {
         '/': (context) => AuthWrapper(),
@@ -61,6 +91,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/add-item': (context) => AddItemPage(),
         '/my-reservations': (context) => MyReservationsPageWrapper(),
+        '/reservation-requests': (context) => const OwnerReservationRequestsPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/item-detail') {
@@ -114,7 +145,7 @@ class MyReservationsPageWrapper extends StatelessWidget {
     if (user != null) {
       return MyReservationsPage(userId: user.uid);
     } else {
-      return Scaffold(
+      return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
